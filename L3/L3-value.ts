@@ -39,15 +39,14 @@ export type Object = {
     tag: "Object";
     fields: {var:VarDecl, val:Value}[];
     methods: {var:SymbolSExp, val:Closure}[];
-    env: Env;
 }
 
 export const makeClass = (fields: VarDecl[], methods:{var:VarDecl, val:ProcExp}[]): Class =>
     ({tag: "Class", fields: fields, methods: methods});
 export const makeObject = (fields: {var:VarDecl, val:Value}[], methods:{var:SymbolSExp, val:Closure}[]): Object =>
-    ({tag: "Object", fields: fields, methods: methods,env : makeEmptyEnv()});
+    ({tag: "Object", fields: fields, methods: methods});
 export const makeObjectEnv = (fields: {var:VarDecl, val:Value}[], methods:{var:SymbolSExp, val:Closure}[], env: Env): Object =>
-    ({tag: "Object", fields: fields, methods: methods,env : env});
+    ({tag: "Object", fields: fields, methods: methods });
 
 export const isClass = (x: any): x is Class => x.tag === "Class";
 export const isObject = (x: any): x is Object => x.tag === "Object";

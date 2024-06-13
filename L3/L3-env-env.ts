@@ -46,7 +46,7 @@ export const makeExtEnv = (vs: string[], vals: Value[], env: Env): ExtEnv =>
   export const makeRecEnv = (vs: string[], procs : ProcExp[], env: Env): RecEnv =>
   ({tag: "RecEnv", vars: vs, vals : procs, nextEnv: env});
 
-const isEmptyEnv = (x: any): x is EmptyEnv => x.tag === "EmptyEnv";
+export const isEmptyEnv = (x: any): x is EmptyEnv => x.tag === "EmptyEnv";
 const isExtEnv = (x: any): x is ExtEnv => x.tag === "ExtEnv";
 const isRecEnv = (x: any): x is RecEnv => x.tag === "RecEnv";
 

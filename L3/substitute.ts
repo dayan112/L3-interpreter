@@ -1,7 +1,7 @@
 import { filter, indexOf, map, includes, zip, KeyValuePair } from "ramda";
-import { CExp, ProcExp, VarDecl, VarRef } from "./L3-ast";
-import { isAppExp, isBoolExp, isIfExp, isLitExp, isNumExp, isPrimOp, isProcExp, isStrExp, isVarRef } from "./L3-ast";
-import { makeAppExp, makeIfExp, makeProcExp, makeVarDecl, makeVarRef } from "./L3-ast";
+import { CExp, ClassExp, ProcExp, VarDecl, VarRef, makeBinding, Binding } from "./L3-ast";
+import { isAppExp, isBoolExp, isIfExp, isLitExp, isNumExp, isPrimOp, isProcExp, isStrExp, isVarRef, isClassExp } from "./L3-ast";
+import { makeAppExp, makeIfExp, makeProcExp, makeVarDecl, makeVarRef, makeClassExp } from "./L3-ast";
 import { first, isNonEmptyList } from '../shared/list';
 
 // For applicative eval - the type of exps should be ValueExp[] | VarRef[];
@@ -32,6 +32,18 @@ export const substitute = (body: CExp[], vars: string[], exps: CExp[]): CExp[] =
         return ((pos > -1) ? exps[pos] : e);
     };
     
+    const subClassExp = (e: ClassExp): ClassExp =>{
+        const argNames = map((f) => f.var,e.fields);
+        const subst = zip(vars,exps);
+        const freeSubst = filter((ve)=> isNonEmptyList<string>(ve) && !includes(first(ve), argNames), subst);
+        return makeClassExp(e.fields,
+                            map((method: Binding) => makeBinding(method.var.var,
+                                substitute([method.val], 
+                                    map((x: KeyValuePair<string, CExp>) => x[0], freeSubst),
+                                    map((x: KeyValuePair<string, CExp>) => x[1], freeSubst)
+                                )[0]) , e.methods) );
+    }
+
     const subProcExp = (e: ProcExp): ProcExp => {
         const argNames = map((x) => x.var, e.args);
         const subst = zip(vars, exps);
@@ -57,6 +69,7 @@ export const substitute = (body: CExp[], vars: string[], exps: CExp[]): CExp[] =
         isIfExp(e) ? makeIfExp(sub(e.test), sub(e.then), sub(e.alt)) :
         isProcExp(e) ? subProcExp(e) :
         isAppExp(e) ? makeAppExp(sub(e.rator), map(sub, e.rands)) :
+        isClassExp(e) ? subClassExp(e):
         e;
     
     return map(sub, body);
