@@ -70,8 +70,7 @@ export type LetExp = {tag: "LetExp"; bindings: Binding[]; body: CExp[]; }
 export type LitExp = {tag: "LitExp"; val: SExpValue; }
 
 //ADDED
-export type ClassExp = {tag: "ClassExp"; fields: VarDecl[]; methods:Binding[]; }
-//export type ObjectExp = {tag: "ObjectExp"; className: string; }
+export type ClassExp = {tag: "ClassExp"; fields: VarDecl[]; methods:Binding[]; } 
 
 
 // Type value constructors for disjoint types
