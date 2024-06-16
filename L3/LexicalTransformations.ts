@@ -8,7 +8,6 @@ import { ClassExp, ProcExp, makeProgram, Exp, isExp, isClassExp, isIfExp,isAtomi
      makeDefineExp} from "./L3-ast";
 import { Result, makeFailure, makeOk } from "../shared/result";
 import { map, reduce } from "ramda"
-import { isSymbolSExp, makeSymbolSExp } from "./L3-value";
 
 /*
 Purpose: Transform ClassExp to ProcExp
@@ -19,7 +18,7 @@ export const class2proc = (exp: ClassExp): ProcExp =>{
     const symbol :VarDecl =  makeVarDecl("msg");
     return makeProcExp(exp.fields,
         [makeProcExp([symbol],
-            [reduce((acc,crr)=>makeIfExp(makeAppExp(makePrimOp("eq?"),[makeVarRef("msg"), makePrimOp("'"+crr.var.var)]), crr.val, acc) as CExp,
+            [reduce((acc,crr)=>makeIfExp(makeAppExp(makePrimOp("eq?"),[makeVarRef("msg"), makePrimOp("'"+crr.var.var)]), makeAppExp(crr.val, []) as CExp, acc) as CExp,
             makeBoolExp(false) as CExp,
             exp.methods.reverse()
             )])as CExp
