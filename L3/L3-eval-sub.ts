@@ -73,18 +73,17 @@ const L3applyProcedure = (proc: Value, args: Value[], env: Env): Result<Value> =
     makeFailure(`Bad procedure ${format(proc)}`);
 
 //ADDED
-const applyClass = (cl: Class, args: Value[]): Result<Value> =>{
-    return makeOk(makeObject(fieldsMaker(cl.fields,args), 
-                            map((method: {var: VarDecl, val:ProcExp}) =>  
-                                    ({var: makeSymbolSExp(method.var.var), 
-                                    val: makeClosure(method.val.args, 
-                                                    substitute(method.val.body, 
-                                                                map((vr:VarDecl) => vr.var, cl.fields), 
-                                                                map((arg:Value) => valueToLitExp(arg),args)
-                                                            )
-                                                        )
-                                                    }), cl.methods)))
-}
+const applyClass = (cl: Class, args: Value[]): Result<Value> =>
+    makeOk(makeObject(fieldsMaker(cl.fields,args), 
+                    map((method: {var: VarDecl, val:ProcExp}) =>  
+                            ({var: makeSymbolSExp(method.var.var), 
+                            val: makeClosure(method.val.args, 
+                                            substitute(renameExps(method.val.body), 
+                                                        map((vr:VarDecl) => vr.var, cl.fields), 
+                                                        map((arg:Value) => valueToLitExp(arg),args)
+                                                    )
+                                            )
+                            }), cl.methods)))
 
 const applyObject = (proc: Object, args: Value[], env:Env): Result<Value> => {
     if (isEmpty(args)) {

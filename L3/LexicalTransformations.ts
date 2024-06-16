@@ -16,7 +16,6 @@ Signature: class2proc(classExp)
 Type: ClassExp => ProcExp
 */
 export const class2proc = (exp: ClassExp): ProcExp =>{
-    const vars: VarDecl[] = map((m: Binding)=>m.var,exp.methods);
     const symbol :VarDecl =  makeVarDecl("msg");
     return makeProcExp(exp.fields,
         [makeProcExp([symbol],

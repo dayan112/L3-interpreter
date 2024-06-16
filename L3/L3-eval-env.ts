@@ -46,7 +46,6 @@ const applicativeEval = (exp: CExp, env: Env): Result<Value> =>
 
 //ADDED:
 const evalClass = (cls: ClassExp) : Result<Class> =>
-    //allT(isBinding,cls.methods)? 
     allT(isProcExp,map((m) => m.val,cls.methods)) ?
     makeOk(makeClass(cls.fields, map((method : Binding) => ({var: method.var, val : method.val as ProcExp}), cls.methods))) : 
     makeFailure("bad stuff happened");

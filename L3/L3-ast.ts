@@ -184,7 +184,7 @@ export const parseL3SpecialForm = (op: Sexp, params: Sexp[]): Result<CExp> =>
     op === "quote" ? 
         isNonEmptyList<Sexp>(params) ? parseLitExp(first(params)) :
         makeFailure(`Bad quote exp: ${params}`) :
-    op === "class" ?
+    op === "class" ? //ADDED
         isNonEmptyList<Sexp>(params) && params.length === 2  ? parseClassExp(params[0], params[1]) : 
         makeFailure(`Bad class exp: ${params}`) :
     makeFailure("Never");
@@ -268,12 +268,10 @@ const parseLetExp = (bindings: Sexp, body: Sexp[]): Result<LetExp> => {
 
 //ADDED
 const parseClassExp = (fields: Sexp, bindings:Sexp): Result<ClassExp> => {  
-    if(!isGoodBindings(bindings)){ return makeFailure("wrong body of class");}
-
-    if(!isArray(fields) || !allT(isString, fields)){ return makeFailure("wrong body of class");}
-
-    //const vars = map(b => b[0], bindings);
-    //const fieldVars = map((field : Sexp) => makeVarDecl(field as string),fields);
+    if(!isGoodBindings(bindings))
+        return makeFailure("wrong body of class");
+    if(!isArray(fields) || !allT(isString, fields))
+        return makeFailure("wrong body of class");
     
     const atributes = map(makeVarDecl,fields);
     const vars = map((b) => b[0], bindings);
